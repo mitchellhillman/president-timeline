@@ -10,7 +10,7 @@
   --bar:   #E2E4E7;  /* light-grey lifespan bar                     */
   --grid:  #D7DADE;  /* gridlines / hairlines                       */
   --red:   #E3120B;  /* ONLY: term in office                        */
-  --blue:  #3B4BA0;  /* ONLY: living president                      */
+  --blue:  #A3C2E3;  /* ONLY: living president (light blue)          */
 
   /* Timeline scale — set on #plot, consumed via calc() */
   --min-year: 1732;
@@ -159,9 +159,9 @@ h1 {
   text-align: left;
 }
 
-/* Living presidents: blue tipped right edge to read as "still alive" */
+/* Living presidents: the whole bar is light blue */
 .president.is-living .bar {
-  background: linear-gradient(90deg, var(--bar) 0 70%, var(--blue) 100%);
+  background: var(--blue);
 }
 
 .bar__name {
@@ -216,11 +216,16 @@ h1 {
 .age--death {
   left: calc((var(--death) - var(--min-year)) / var(--span) * 100% + 4px);
 }
+/* Starting-term age sits on the bar; give it the bar's own background so it
+   cleanly occludes the name where the two overlap. */
 .age--inaug {
   left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100% - 1.4em);
   justify-content: flex-end;
   color: var(--text);
+  background: var(--bar);
+  padding: 0 2px;
 }
+.president.is-living .age--inaug { background: var(--blue); }
 
 /* ---------- Axis -------------------------------------------- */
 
@@ -388,7 +393,8 @@ h1 {
   margin: 2.5rem auto 3rem;
   padding: 1rem 1.5rem 0;
   border-top: 1px solid var(--grid);
-  font-size: 0.78rem;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text);
 }
 .colophon a { color: var(--text); }

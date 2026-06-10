@@ -63,11 +63,13 @@
       return { ...p, _birth: birth, _death: death, _terms: terms, _living: !death };
     });
 
-    // Scale: floor below earliest birth → today.
+    // Scale: floor below earliest birth → a bit past today. The right-side
+    // headroom leaves room for the rightmost age labels so they don't clip the
+    // edge and trigger a horizontal scrollbar on desktop.
     const minYear = Math.floor(
       Math.min(...people.map((p) => decimalYear(p._birth))) / 10
     ) * 10;
-    const maxYear = decimalYear(TODAY);
+    const maxYear = decimalYear(TODAY) + 10;
     const span = maxYear - minYear;
 
     const plot = document.getElementById("plot");
