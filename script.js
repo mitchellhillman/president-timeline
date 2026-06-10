@@ -1,5 +1,5 @@
 /* ============================================================
-   US Presidents — Lifespans & Terms in Office
+   US Presidents: Lifespans & Terms in Office
    Renders the timeline into semantic HTML and wires interactions.
    ============================================================ */
 

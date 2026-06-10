@@ -1,26 +1,23 @@
 # President Timeline
 
-An interactive timeline of every US president's **lifespan** and **time in office**, in the
-visual language of *The Economist*.
+An interactive timeline of every US president's **lifespan** and **time in office**.
 
 Each horizontal bar is one president's life; the **red segment** marks their term(s) in
-office. The name sits inside the bar, and small numbers show ages at key points. Hover or
-focus a bar to drop a guide line at that president's inauguration and see how old every
-other living president was at that moment. Click (or keyboard-activate) a bar for a card
-with a portrait, term details, an ages-at-inauguration breakdown, and a link to the
-president's Wikipedia article.
+office, and a **blue tip** marks presidents who are still living. The name sits inside the
+bar, and small numbers show ages at key points. Click (or keyboard-activate) a bar for a
+card with a portrait, term details, and a link to the president's Wikipedia article.
 
 **Live site:** https://mitchellhillman.github.io/president-timeline/
 
 ## Highlights
 
-- **45 presidents, 47 presidencies** — Grover Cleveland (#22 & #24) and Donald Trump
+- **45 presidents, 47 presidencies.** Grover Cleveland (#22 & #24) and Donald Trump
   (#45 & #47) each get two red term segments on a single lifespan bar.
-- **Semantic HTML** — an ordered list of `<article>`s with `<time>` elements; bar geometry
+- **Semantic HTML.** An ordered list of `<article>`s with `<time>` elements; bar geometry
   is driven entirely by CSS custom properties and `calc()`.
-- **Responsive scale** — the timeline fits the window on desktop; on mobile it keeps a
-  minimum width and scrolls horizontally.
-- **No build step** — plain HTML, CSS, and vanilla JS.
+- **Responsive scale.** The timeline fits the window on desktop; on mobile it keeps a
+  minimum width and scrolls horizontally. Year labels run along both the top and bottom.
+- **No build step.** Plain HTML, CSS, and vanilla JS.
 
 ## Data & assets
 
@@ -28,7 +25,8 @@ president's Wikipedia article.
   [Wikipedia](https://en.wikipedia.org/wiki/List_of_presidents_of_the_United_States) and
   live in [`data.json`](data.json).
 - Portrait thumbnails in [`img/`](img/) were fetched from each president's Wikipedia page
-  via the MediaWiki API using [`fetch-images.mjs`](fetch-images.mjs). To refresh them:
+  via the MediaWiki API using [`fetch-images.mjs`](fetch-images.mjs), which validates each
+  file is a real JPEG and is safe to re-run:
 
   ```sh
   node fetch-images.mjs
@@ -36,10 +34,11 @@ president's Wikipedia article.
 
 ## Design
 
-- **Typeface:** [Jost](https://fonts.google.com/specimen/Jost) — clean, geometric, stark.
-- **Palette:** The Economist
-  — accent red `#E3120B`, salmon `#F4A39E`, slate blue `#7E9DC9`, navy `#3B4BA0`,
-  ink `#121212`, gridline grey `#C9CDD2`, caption grey `#8A8A8A`, paper `#FFFFFF`.
+- **Typeface:** [Jost](https://fonts.google.com/specimen/Jost), a single semibold weight
+  throughout for a clean, stark feel.
+- **Palette:** monochrome white. Text and labels are a very dark grey (`#2B2B2B`) on white;
+  lifespan bars are light grey (`#E2E4E7`). Color is used only with meaning: **red**
+  (`#E3120B`) for time in office and **blue** (`#3B4BA0`) for living presidents.
 
 ## Run locally
 
@@ -55,5 +54,4 @@ Actions build is required.
 
 ---
 
-*Portraits and biographical data © their respective sources, via Wikipedia / Wikimedia
-Commons.*
+*Portraits and biographical data are from Wikipedia / Wikimedia Commons.*

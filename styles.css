@@ -1,23 +1,21 @@
 /* ============================================================
    US Presidents — Lifespans & Terms in Office
-   Type: Jost.  Palette: The Economist.
+   Type: Jost, one consistent semibold weight.
+   Monochrome white; red = time in office, blue = living. Nothing else colored.
    ============================================================ */
 
 :root {
-  /* Economist palette */
-  --red:      #E3120B;  /* accent / term in office          */
-  --salmon:   #F4A39E;  /* light red / guide line + badges  */
-  --slate:    #7E9DC9;  /* slate blue / lifespan bar        */
-  --navy:     #3B4BA0;  /* navy / living accent             */
-  --ink:      #121212;  /* titles, text                     */
-  --grid:     #C9CDD2;  /* gridlines                        */
-  --caption:  #8A8A8A;  /* captions, age labels             */
-  --paper:    #FFFFFF;  /* background                       */
+  --paper: #FFFFFF;  /* background                                  */
+  --text:  #2B2B2B;  /* very dark grey: all labels + all body copy  */
+  --bar:   #E2E4E7;  /* light-grey lifespan bar                     */
+  --grid:  #D7DADE;  /* gridlines / hairlines                       */
+  --red:   #E3120B;  /* ONLY: term in office                        */
+  --blue:  #3B4BA0;  /* ONLY: living president                      */
 
-  /* Timeline scale — set on .timeline / .axis, consumed via calc() */
+  /* Timeline scale — set on #plot, consumed via calc() */
   --min-year: 1732;
   --max-year: 2026;
-  --span: 294;          /* max-year − min-year (set by JS)  */
+  --span: 294;
 
   --row-h: 23px;   /* 1px gap above/below each bar */
   --bar-h: 22px;
@@ -30,10 +28,10 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--paper);
-  color: var(--ink);
+  color: var(--text);
   font-family: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 16px;
-  font-weight: 400;
+  font-weight: 600;
   font-variant-numeric: tabular-nums lining-nums;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
@@ -45,21 +43,19 @@ body {
   max-width: 1180px;
   margin: 0 auto;
   padding: 2.75rem 1.5rem 1.25rem;
-  border-top: 5px solid var(--red);
+  border-top: 4px solid var(--text);
 }
 
 .kicker {
   margin: 0 0 0.4rem;
   font-size: 0.78rem;
-  font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--red);
+  color: var(--text);
 }
 
 h1 {
   margin: 0;
-  font-weight: 300;
   font-size: clamp(1.7rem, 4vw, 2.9rem);
   letter-spacing: -0.01em;
   line-height: 1.05;
@@ -76,16 +72,16 @@ h1 {
   list-style: none;
   font-size: 0.875rem;
   letter-spacing: 0.04em;
-  color: var(--caption);
+  color: var(--text);
   text-transform: uppercase;
 }
 
 .legend li { display: flex; align-items: center; gap: 0.45rem; }
 
 .swatch { width: 26px; height: 12px; display: inline-block; }
-.swatch--life   { background: var(--slate); }
+.swatch--life   { background: var(--bar); }
 .swatch--term   { background: var(--red); }
-.swatch--living { background: repeating-linear-gradient(90deg, var(--navy) 0 4px, transparent 4px 7px); height: 3px; }
+.swatch--living { background: var(--blue); }
 
 /* ---------- Chart ------------------------------------------- */
 
@@ -151,28 +147,27 @@ h1 {
   height: var(--bar-h);
   left:  calc((var(--birth) - var(--min-year)) / var(--span) * 100%);
   width: calc((var(--death) - var(--birth)) / var(--span) * 100%);
-  background: var(--slate);
+  background: var(--bar);
   border: none;
   padding: 0;
   margin: 0;
   font: inherit;
-  color: var(--paper);
+  color: var(--text);
   cursor: pointer;
   display: flex;
   align-items: center;
   text-align: left;
 }
 
-/* Living presidents: navy tipped right edge to read as "ongoing" */
+/* Living presidents: blue tipped right edge to read as "still alive" */
 .president.is-living .bar {
-  background: linear-gradient(90deg, var(--slate) 0 70%, var(--navy) 100%);
+  background: linear-gradient(90deg, var(--bar) 0 70%, var(--blue) 100%);
 }
 
 .bar__name {
   margin: 0;
   padding: 0 0.5rem;
   font-size: 1rem;
-  font-weight: 500;
   letter-spacing: 0.01em;
   white-space: nowrap;
   overflow: hidden;
@@ -190,9 +185,8 @@ h1 {
   display: flex;
   align-items: center;
   width: max-content;
-  color: var(--ink);
+  color: var(--text);
   font-size: 1rem;
-  font-weight: 500;
   pointer-events: none;
 }
 
@@ -215,7 +209,7 @@ h1 {
   display: flex;
   align-items: center;
   font-size: 0.9rem;
-  color: var(--ink);
+  color: var(--text);
   pointer-events: none;
   white-space: nowrap;
 }
@@ -225,7 +219,7 @@ h1 {
 .age--inaug {
   left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100% - 1.4em);
   justify-content: flex-end;
-  color: var(--ink);
+  color: var(--text);
 }
 
 /* ---------- Axis -------------------------------------------- */
@@ -234,7 +228,7 @@ h1 {
   position: relative;
   height: 1.6rem;
   margin-top: 0.35rem;
-  border-top: 1px solid var(--ink);
+  border-top: 1px solid var(--text);
 }
 
 /* Duplicate axis above the chart: rule on the bottom edge, marks + labels above */
@@ -242,7 +236,7 @@ h1 {
   margin-top: 0;
   margin-bottom: 0.35rem;
   border-top: none;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--text);
 }
 
 .tick {
@@ -251,7 +245,7 @@ h1 {
   left: calc((var(--year) - var(--min-year)) / var(--span) * 100%);
   transform: translateX(-50%);
   font-size: 0.875rem;
-  color: var(--caption);
+  color: var(--text);
   padding-top: 0.25rem;
 }
 .tick::before {
@@ -260,7 +254,7 @@ h1 {
   top: 0;
   left: 50%;
   height: 5px;
-  border-left: 1px solid var(--ink);
+  border-left: 1px solid var(--text);
 }
 
 /* Top axis: anchor labels + marks to the bottom (toward the chart) */
@@ -279,10 +273,10 @@ h1 {
 .chart__hint {
   margin: 1rem 0 0;
   font-size: 0.8rem;
-  color: var(--caption);
+  color: var(--text);
 }
 
-/* ---------- Popover ----------------------------------------- */
+/* ---------- Modal (popover) --------------------------------- */
 
 .popcard {
   position: fixed;
@@ -291,13 +285,13 @@ h1 {
   transform: translate(-50%, -50%);
   z-index: 1000;
   display: none;
-  border: 1px solid var(--ink);
-  border-top: 4px solid var(--red);
+  border: 1px solid var(--text);
+  border-top: 4px solid var(--text);
   padding: 0;
   max-width: 320px;
   width: calc(100vw - 2rem);
   background: var(--paper);
-  color: var(--ink);
+  color: var(--text);
   box-shadow: 0 10px 30px rgba(18, 18, 18, 0.18);
 }
 .popcard.is-open { display: block; }
@@ -322,36 +316,35 @@ h1 {
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--caption);
+  color: var(--text);
   margin: 0 0 0.15rem;
 }
 
 .popcard__name {
   margin: 0;
   font-size: 1.1rem;
-  font-weight: 500;
   line-height: 1.1;
 }
-.popcard__name a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--red); }
-.popcard__name a:hover { color: var(--red); }
+.popcard__name a { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--text); }
+.popcard__name a:hover { opacity: 0.6; }
 
 .popcard__life {
   margin: 0.3rem 0 0;
   font-size: 0.82rem;
-  color: var(--caption);
+  color: var(--text);
 }
 
 .popcard__body { padding: 0 1rem 1rem; }
 
 .popcard__terms {
-  margin: 0 0 0.6rem;
+  margin: 0;
   padding: 0.6rem 0 0;
   border-top: 1px solid var(--grid);
   font-size: 0.82rem;
   list-style: none;
 }
 .popcard__terms li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.1rem 0; }
-.popcard__terms .yrs { color: var(--caption); }
+.popcard__terms .yrs { color: var(--text); }
 
 /* Close button */
 .popcard__close {
@@ -365,13 +358,14 @@ h1 {
   justify-content: center;
   border: none;
   background: none;
-  color: var(--caption);
+  color: var(--text);
+  font-family: inherit;
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
 }
-.popcard__close:hover { color: var(--ink); }
-.popcard__close:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.popcard__close:hover { opacity: 0.6; }
+.popcard__close:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 
 /* Full-screen dimming overlay that also blocks clicks to the chart while open */
 .popcard-overlay {
@@ -385,7 +379,7 @@ h1 {
 
 /* ---------- Focus & accessibility --------------------------- */
 
-.bar:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.bar:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 
 /* ---------- Colophon ---------------------------------------- */
 
@@ -395,7 +389,7 @@ h1 {
   padding: 1rem 1.5rem 0;
   border-top: 1px solid var(--grid);
   font-size: 0.78rem;
-  color: var(--caption);
+  color: var(--text);
 }
-.colophon a { color: var(--caption); }
-.colophon a:hover { color: var(--red); }
+.colophon a { color: var(--text); }
+.colophon a:hover { opacity: 0.6; }
