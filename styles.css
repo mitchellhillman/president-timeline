@@ -204,11 +204,12 @@ h1 {
 /* Age labels at key points */
 .age {
   position: absolute;
-  top: calc((var(--row-h) - var(--bar-h)) / 2 - 1px);
+  top: calc((var(--row-h) - var(--bar-h)) / 2);
   height: var(--bar-h);
   display: flex;
   align-items: center;
   font-size: 0.9rem;
+  line-height: var(--bar-h);
   color: var(--text);
   pointer-events: none;
   white-space: nowrap;
