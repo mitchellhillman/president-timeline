@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Presidents — Lifespans &amp; Terms in Office</title>
+  <meta name="description" content="A timeline of every US president's lifespan and time in office, sourced from Wikipedia.">
+  <link rel="icon" type="image/jpeg" href="img/01-washington.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2">
+</head>
+<body>
+  <header class="masthead">
+    <p class="kicker">United States</p>
+    <h1>Presidents &mdash; lifespans &amp; terms in office</h1>
+    <p class="standfirst">
+      Each bar shows a president&rsquo;s life. The <strong>red segment</strong> is their time in
+      office. The name sits inside the bar; the numbers are ages at key points. Hover or focus a
+      bar to see birth and death years and how old every other president was at that president&rsquo;s
+      inauguration &mdash; counting only those alive at the time.
+    </p>
+
+    <ul class="legend" aria-label="Legend">
+      <li><span class="swatch swatch--life" aria-hidden="true"></span>Lifespan</li>
+      <li><span class="swatch swatch--term" aria-hidden="true"></span>In office</li>
+      <li><span class="swatch swatch--living" aria-hidden="true"></span>Living</li>
+    </ul>
+  </header>
+
+  <main>
+    <section class="chart" aria-label="Timeline of US presidents">
+      <div class="chart__scroll">
+        <div class="plot" id="plot">
+          <div class="rows" id="rows">
+            <div class="gridlines" id="gridlines" aria-hidden="true"></div>
+            <div class="guide" id="guide" aria-hidden="true"></div>
+            <ol class="timeline" id="timeline">
+              <!-- President rows are rendered here by script.js -->
+            </ol>
+          </div>
+          <div class="axis" id="axis" aria-hidden="true">
+            <!-- Year tick labels are rendered here by script.js -->
+          </div>
+        </div>
+      </div>
+      <p class="chart__hint" id="chart-hint" role="note">
+        Tap or focus any bar for details and a link to that president&rsquo;s Wikipedia page.
+      </p>
+    </section>
+  </main>
+
+  <footer class="colophon">
+    <p>
+      Data and portraits from
+      <a href="https://en.wikipedia.org/wiki/List_of_presidents_of_the_United_States" rel="noopener">Wikipedia</a>.
+      Ages and term lengths are computed from full birth, death and inauguration dates.
+    </p>
+  </footer>
+
+  <script src="script.js?v=2" defer></script>
+</body>
+</html>

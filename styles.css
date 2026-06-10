@@ -1,0 +1,415 @@
+/* ============================================================
+   US Presidents — Lifespans & Terms in Office
+   Type: Jost.  Palette: The Economist.
+   ============================================================ */
+
+:root {
+  /* Economist palette */
+  --red:      #E3120B;  /* accent / term in office          */
+  --salmon:   #F4A39E;  /* light red / guide line + badges  */
+  --slate:    #7E9DC9;  /* slate blue / lifespan bar        */
+  --navy:     #3B4BA0;  /* navy / living accent             */
+  --ink:      #121212;  /* titles, text                     */
+  --grid:     #C9CDD2;  /* gridlines                        */
+  --caption:  #8A8A8A;  /* captions, age labels             */
+  --paper:    #FFFFFF;  /* background                       */
+
+  /* Timeline scale — set on .timeline / .axis, consumed via calc() */
+  --min-year: 1732;
+  --max-year: 2026;
+  --span: 294;          /* max-year − min-year (set by JS)  */
+
+  --row-h: 30px;
+  --bar-h: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Masthead ---------------------------------------- */
+
+.masthead {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 1.25rem;
+  border-top: 5px solid var(--red);
+}
+
+.kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+h1 {
+  margin: 0;
+  font-weight: 300;
+  font-size: clamp(1.7rem, 4vw, 2.9rem);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.standfirst {
+  max-width: 60ch;
+  margin: 0.9rem 0 0;
+  font-size: 1rem;
+  font-weight: 300;
+  color: #333;
+}
+
+.standfirst strong { font-weight: 500; color: var(--red); }
+
+/* ---------- Legend ------------------------------------------ */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--caption);
+  text-transform: uppercase;
+}
+
+.legend li { display: flex; align-items: center; gap: 0.45rem; }
+
+.swatch { width: 26px; height: 12px; display: inline-block; }
+.swatch--life   { background: var(--slate); }
+.swatch--term   { background: var(--red); }
+.swatch--living { background: repeating-linear-gradient(90deg, var(--navy) 0 4px, transparent 4px 7px); height: 3px; }
+
+/* ---------- Chart ------------------------------------------- */
+
+.chart {
+  max-width: 1180px;
+  margin: 1.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+/* Desktop: everything fits in the window. Mobile: min-width + scroll. */
+.chart__scroll {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.plot {
+  position: relative;
+  min-width: 760px;   /* mobile floor — forces horizontal scroll */
+}
+
+@media (min-width: 800px) {
+  .plot { min-width: 0; }   /* fit to window on desktop */
+}
+
+.rows { position: relative; }
+
+.timeline {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Gridlines: vertical lines at each tick year, behind the rows */
+.gridlines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.gridline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc((var(--year) - var(--min-year)) / var(--span) * 100%);
+  border-left: 1px solid var(--grid);
+}
+
+/* ---------- President rows ---------------------------------- */
+
+.president {
+  position: relative;
+  height: var(--row-h);
+}
+
+/* The lifespan bar */
+.bar {
+  position: absolute;
+  top: calc((var(--row-h) - var(--bar-h)) / 2);
+  height: var(--bar-h);
+  left:  calc((var(--birth) - var(--min-year)) / var(--span) * 100%);
+  width: calc((var(--death) - var(--birth)) / var(--span) * 100%);
+  background: var(--slate);
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--paper);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+/* Living presidents: navy tipped right edge to read as "ongoing" */
+.president.is-living .bar {
+  background: linear-gradient(90deg, var(--slate) 0 70%, var(--navy) 100%);
+}
+
+.bar__name {
+  margin: 0;
+  padding: 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* When the bar is too narrow, the name is placed to the right of it instead */
+.bar__name--outside {
+  position: absolute;
+  left: calc((var(--death) - var(--min-year)) / var(--span) * 100% + 6px);
+  top: 0;
+  height: var(--row-h);
+  display: flex;
+  align-items: center;
+  width: max-content;
+  color: var(--ink);
+  font-size: 0.72rem;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+/* Red term-in-office segments */
+.term {
+  position: absolute;
+  top: calc((var(--row-h) - var(--bar-h)) / 2);
+  height: var(--bar-h);
+  left:  calc((var(--t-start) - var(--min-year)) / var(--span) * 100%);
+  width: calc((var(--t-end) - var(--t-start)) / var(--span) * 100%);
+  background: var(--red);
+  pointer-events: none;
+}
+
+/* Age labels at key points */
+.age {
+  position: absolute;
+  top: calc((var(--row-h) - var(--bar-h)) / 2 - 1px);
+  height: var(--bar-h);
+  display: flex;
+  align-items: center;
+  font-size: 0.62rem;
+  color: var(--caption);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.age--death {
+  left: calc((var(--death) - var(--min-year)) / var(--span) * 100% + 4px);
+}
+.president.is-living .age--death { color: var(--navy); }
+.age--inaug {
+  left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100% - 1.4em);
+  justify-content: flex-end;
+  color: var(--paper);
+  mix-blend-mode: difference;
+}
+
+/* ---------- Hover guide line + badges ----------------------- */
+
+.guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed var(--salmon);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 4;
+}
+.guide.is-on { opacity: 1; }
+
+.badge {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--paper);
+  background: var(--salmon);
+  padding: 0 3px;
+  border-radius: 2px;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+/* ---------- Axis -------------------------------------------- */
+
+.axis {
+  position: relative;
+  height: 1.6rem;
+  margin-top: 0.35rem;
+  border-top: 1px solid var(--ink);
+}
+
+.tick {
+  position: absolute;
+  top: 0;
+  left: calc((var(--year) - var(--min-year)) / var(--span) * 100%);
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  color: var(--caption);
+  padding-top: 0.25rem;
+}
+.tick::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 5px;
+  border-left: 1px solid var(--ink);
+}
+/* keep the last label from clipping at the right edge */
+.tick--end { transform: translateX(-100%); padding-right: 4px; }
+.tick--end::before { left: auto; right: 0; }
+
+.chart__hint {
+  margin: 1rem 0 0;
+  font-size: 0.8rem;
+  color: var(--caption);
+}
+
+/* ---------- Popover ----------------------------------------- */
+
+.popcard {
+  position: fixed;
+  inset: 0;
+  margin: auto;          /* deterministic centering across browsers */
+  height: max-content;
+  border: 1px solid var(--ink);
+  border-top: 4px solid var(--red);
+  padding: 0;
+  max-width: 320px;
+  width: calc(100vw - 2rem);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 10px 30px rgba(18, 18, 18, 0.18);
+}
+
+.popcard__head {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem 0.75rem;
+  align-items: flex-start;
+}
+
+.popcard__thumb {
+  width: 56px;
+  height: 70px;
+  object-fit: cover;
+  background: var(--grid);
+  flex: 0 0 auto;
+  border: 1px solid var(--grid);
+}
+
+.popcard__num {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--caption);
+  margin: 0 0 0.15rem;
+}
+
+.popcard__name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.popcard__name a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--red); }
+.popcard__name a:hover { color: var(--red); }
+
+.popcard__life {
+  margin: 0.3rem 0 0;
+  font-size: 0.82rem;
+  color: var(--caption);
+}
+
+.popcard__body { padding: 0 1rem 1rem; }
+
+.popcard__terms {
+  margin: 0 0 0.6rem;
+  padding: 0.6rem 0 0;
+  border-top: 1px solid var(--grid);
+  font-size: 0.82rem;
+  list-style: none;
+}
+.popcard__terms li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.1rem 0; }
+.popcard__terms .yrs { color: var(--caption); }
+
+.popcard__inaug-h {
+  margin: 0 0 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.popcard__others {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  max-height: 8.5rem;
+  overflow-y: auto;
+}
+.popcard__others li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.08rem 0; }
+.popcard__others .age-n { color: var(--caption); font-variant-numeric: tabular-nums; }
+
+.popcard__others li.is-self { color: var(--red); font-weight: 500; }
+.popcard__others li.is-self .age-n { color: var(--red); }
+
+/* ---------- Focus & accessibility --------------------------- */
+
+.bar:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .guide { transition: opacity 0.12s ease; }
+}
+
+/* ---------- Colophon ---------------------------------------- */
+
+.colophon {
+  max-width: 1180px;
+  margin: 2.5rem auto 3rem;
+  padding: 1rem 1.5rem 0;
+  border-top: 1px solid var(--grid);
+  font-size: 0.78rem;
+  color: var(--caption);
+}
+.colophon a { color: var(--caption); }
+.colophon a:hover { color: var(--red); }
