@@ -2,10 +2,11 @@
 
 An interactive timeline of every US president's **lifespan** and **time in office**.
 
-Each horizontal bar is one president's life; the **red segment** marks their term(s) in
-office, and a **blue tip** marks presidents who are still living. The name sits inside the
-bar, and small numbers show ages at key points. Click (or keyboard-activate) a bar for a
-card with a portrait, term details, and a link to the president's Wikipedia article.
+Each horizontal bar is one president's life; the **dark-blue segment** marks their term(s)
+in office, and presidents who are still living have a **light-blue** bar. The name sits
+inside the bar, and small numbers show ages at key points. Click (or keyboard-activate) a
+bar for a card with a portrait, term details, and a link to the president's Wikipedia
+article.
 
 **Live site:** https://mitchellhillman.github.io/president-timeline/
 
@@ -37,8 +38,8 @@ card with a portrait, term details, and a link to the president's Wikipedia arti
 - **Typeface:** [Jost](https://fonts.google.com/specimen/Jost), a single semibold weight
   throughout for a clean, stark feel.
 - **Palette:** monochrome white. Text and labels are a very dark grey (`#2B2B2B`) on white;
-  lifespan bars are light grey (`#E2E4E7`). Color is used only with meaning: **red**
-  (`#E3120B`) for time in office and **blue** (`#3B4BA0`) for living presidents.
+  lifespan bars are light grey (`#E2E4E7`). Color is used only with meaning: **dark blue**
+  (`#21409A`) for time in office and **light blue** (`#A3C2E3`) for still-living presidents.
 
 ## Run locally
 

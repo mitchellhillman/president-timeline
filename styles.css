@@ -1,7 +1,7 @@
 /* ============================================================
    US Presidents — Lifespans & Terms in Office
    Type: Jost, one consistent semibold weight.
-   Monochrome white; red = time in office, blue = living. Nothing else colored.
+   Monochrome white; dark blue = time in office, light blue = living. Nothing else colored.
    ============================================================ */
 
 :root {
@@ -9,7 +9,7 @@
   --text:  #2B2B2B;  /* very dark grey: all labels + all body copy  */
   --bar:   #E2E4E7;  /* light-grey lifespan bar                     */
   --grid:  #D7DADE;  /* gridlines / hairlines                       */
-  --red:   #E3120B;  /* ONLY: term in office                        */
+  --term:  #21409A;  /* ONLY: term in office (dark blue)             */
   --blue:  #A3C2E3;  /* ONLY: living president (light blue)          */
 
   /* Timeline scale — set on #plot, consumed via calc() */
@@ -79,8 +79,7 @@ h1 {
 .legend li { display: flex; align-items: center; gap: 0.45rem; }
 
 .swatch { width: 26px; height: 12px; display: inline-block; }
-.swatch--life   { background: var(--bar); }
-.swatch--term   { background: var(--red); }
+.swatch--term   { background: var(--term); }
 .swatch--living { background: var(--blue); }
 
 /* ---------- Chart ------------------------------------------- */
@@ -190,14 +189,14 @@ h1 {
   pointer-events: none;
 }
 
-/* Red term-in-office segments */
+/* Dark-blue term-in-office segments */
 .term {
   position: absolute;
   top: calc((var(--row-h) - var(--bar-h)) / 2);
   height: var(--bar-h);
   left:  calc((var(--t-start) - var(--min-year)) / var(--span) * 100%);
   width: calc((var(--t-end) - var(--t-start)) / var(--span) * 100%);
-  background: var(--red);
+  background: var(--term);
   pointer-events: none;
 }
 
