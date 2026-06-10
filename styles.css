@@ -277,7 +277,8 @@ h1 {
 
 .chart__hint {
   margin: 1rem 0 0;
-  font-size: 0.8rem;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text);
 }
 
