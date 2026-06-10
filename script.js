@@ -90,7 +90,10 @@
 
   function renderGridAndAxis(minYear, maxYear) {
     const grid = document.getElementById("gridlines");
-    const axis = document.getElementById("axis");
+    const axes = [
+      document.getElementById("axis-top"),
+      document.getElementById("axis"),
+    ];
     const ticks = tickYears(minYear, maxYear);
     ticks.forEach((y, i) => {
       const line = document.createElement("div");
@@ -98,13 +101,15 @@
       line.style.setProperty("--year", y);
       grid.appendChild(line);
 
-      const tick = document.createElement("span");
-      tick.className = "tick";
       // Right-align the final label so it doesn't clip past the edge.
-      if (i === ticks.length - 1 && maxYear - y < 12) tick.className += " tick--end";
-      tick.style.setProperty("--year", y);
-      tick.textContent = y;
-      axis.appendChild(tick);
+      const isEnd = i === ticks.length - 1 && maxYear - y < 12;
+      axes.forEach((axis) => {
+        const tick = document.createElement("span");
+        tick.className = "tick" + (isEnd ? " tick--end" : "");
+        tick.style.setProperty("--year", y);
+        tick.textContent = y;
+        axis.appendChild(tick);
+      });
     });
   }
 
@@ -177,7 +182,7 @@
         article.appendChild(name);
       }
 
-      bar.addEventListener("click", () => openPopover(p, people));
+      bar.addEventListener("click", () => openPopover(p));
 
       li.appendChild(article);
       list.appendChild(li);
@@ -190,16 +195,38 @@
 
   /* ---------- popover --------------------------------------- */
 
-  let pop;
+  let pop, overlay;
 
+  // Self-managed modal: a full-screen overlay sits above the chart and catches every
+  // outside click, so a dismissing click physically can't reach a bar and reopen a
+  // card. (Native popover light-dismiss let the same click close one card and open
+  // another.) The card is layered above the overlay; only the close button, the
+  // overlay, or Escape dismiss it.
   function ensurePopover() {
     if (pop) return pop;
+
+    overlay = document.createElement("div");
+    overlay.className = "popcard-overlay";
+    overlay.addEventListener("click", closePopover);
+    document.body.appendChild(overlay);
+
     pop = document.createElement("div");
     pop.className = "popcard";
-    pop.setAttribute("popover", "auto");
     pop.id = "pop-card";
+    pop.setAttribute("role", "dialog");
+    pop.setAttribute("aria-modal", "true");
     document.body.appendChild(pop);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closePopover();
+    });
     return pop;
+  }
+
+  function closePopover() {
+    if (!pop) return;
+    pop.classList.remove("is-open");
+    overlay.classList.remove("is-open");
   }
 
   function fmtYears(p) {
@@ -211,14 +238,8 @@
       " · died at " + yearsBetween(p._birth, p._death);
   }
 
-  function openPopover(person, people) {
+  function openPopover(person) {
     const card = ensurePopover();
-    const inaug = person._terms[0].start;
-
-    const others = people
-      .map((p) => ({ p, age: ageOn(p, inaug) }))
-      .filter((o) => o.age != null)
-      .sort((a, b) => b.age - a.age);
 
     const termsHtml = person._terms
       .map((t) => {
@@ -233,17 +254,8 @@
       })
       .join("");
 
-    const othersHtml = others
-      .map((o) => {
-        const self = o.p === person ? " is-self" : "";
-        return (
-          "<li class='" + self.trim() + "'><span>" + o.p.name + "</span>" +
-          "<span class='age-n'>" + o.age + "</span></li>"
-        );
-      })
-      .join("");
-
     card.innerHTML =
+      "<button class='popcard__close' type='button' aria-label='Close'>&times;</button>" +
       "<div class='popcard__head'>" +
         "<img class='popcard__thumb' src='" + person.img + "' alt='" + person.name + "' " +
           "loading='lazy' onerror=\"this.style.visibility='hidden'\">" +
@@ -256,20 +268,11 @@
       "</div>" +
       "<div class='popcard__body'>" +
         "<ul class='popcard__terms'>" + termsHtml + "</ul>" +
-        "<p class='popcard__inaug-h'>At this inauguration (" +
-          inaug.getUTCFullYear() + "), ages were</p>" +
-        "<ul class='popcard__others'>" + othersHtml + "</ul>" +
       "</div>";
 
-    if (typeof card.showPopover === "function") {
-      card.showPopover();
-    } else {
-      card.setAttribute("data-open", "true");
-      card.style.position = "fixed";
-      card.style.left = "50%";
-      card.style.top = "50%";
-      card.style.transform = "translate(-50%, -50%)";
-      card.style.display = "block";
-    }
+    card.querySelector(".popcard__close").addEventListener("click", closePopover);
+
+    overlay.classList.add("is-open");
+    card.classList.add("is-open");
   }
 })();

@@ -237,6 +237,14 @@ h1 {
   border-top: 1px solid var(--ink);
 }
 
+/* Duplicate axis above the chart: rule on the bottom edge, marks + labels above */
+.axis--top {
+  margin-top: 0;
+  margin-bottom: 0.35rem;
+  border-top: none;
+  border-bottom: 1px solid var(--ink);
+}
+
 .tick {
   position: absolute;
   top: 0;
@@ -254,6 +262,16 @@ h1 {
   height: 5px;
   border-left: 1px solid var(--ink);
 }
+
+/* Top axis: anchor labels + marks to the bottom (toward the chart) */
+.axis--top .tick {
+  top: auto;
+  bottom: 0;
+  padding-top: 0;
+  padding-bottom: 7px;
+}
+.axis--top .tick::before { top: auto; bottom: 0; }
+
 /* keep the last label from clipping at the right edge */
 .tick--end { transform: translateX(-100%); padding-right: 4px; }
 .tick--end::before { left: auto; right: 0; }
@@ -268,9 +286,11 @@ h1 {
 
 .popcard {
   position: fixed;
-  inset: 0;
-  margin: auto;          /* deterministic centering across browsers */
-  height: max-content;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: none;
   border: 1px solid var(--ink);
   border-top: 4px solid var(--red);
   padding: 0;
@@ -280,6 +300,7 @@ h1 {
   color: var(--ink);
   box-shadow: 0 10px 30px rgba(18, 18, 18, 0.18);
 }
+.popcard.is-open { display: block; }
 
 .popcard__head {
   display: flex;
@@ -332,27 +353,35 @@ h1 {
 .popcard__terms li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.1rem 0; }
 .popcard__terms .yrs { color: var(--caption); }
 
-.popcard__inaug-h {
-  margin: 0 0 0.3rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--red);
+/* Close button */
+.popcard__close {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.4rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--caption);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
 }
+.popcard__close:hover { color: var(--ink); }
+.popcard__close:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
-.popcard__others {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.8rem;
-  max-height: 8.5rem;
-  overflow-y: auto;
+/* Full-screen dimming overlay that also blocks clicks to the chart while open */
+.popcard-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(18, 18, 18, 0.5);
+  display: none;
+  z-index: 999;
 }
-.popcard__others li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.08rem 0; }
-.popcard__others .age-n { color: var(--caption); font-variant-numeric: tabular-nums; }
-
-.popcard__others li.is-self { color: var(--red); font-weight: 500; }
-.popcard__others li.is-self .age-n { color: var(--red); }
+.popcard-overlay.is-open { display: block; }
 
 /* ---------- Focus & accessibility --------------------------- */
 
