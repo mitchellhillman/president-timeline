@@ -219,8 +219,8 @@ h1 {
 /* Starting-term age sits on the bar; give it the bar's own background so it
    cleanly occludes the name where the two overlap. */
 .age--inaug {
-  left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100% - 1.4em);
-  justify-content: flex-end;
+  left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100%);
+  transform: translateX(calc(-100% - 2px));  /* right edge sits 2px before the term bar */
   color: var(--text);
   background: var(--bar);
   padding: 0 2px;
