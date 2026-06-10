@@ -19,8 +19,8 @@
   --max-year: 2026;
   --span: 294;          /* max-year − min-year (set by JS)  */
 
-  --row-h: 30px;
-  --bar-h: 16px;
+  --row-h: 23px;   /* 1px gap above/below each bar */
+  --bar-h: 22px;
 }
 
 * { box-sizing: border-box; }
@@ -32,6 +32,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
   font-weight: 400;
   font-variant-numeric: tabular-nums lining-nums;
   line-height: 1.4;
@@ -64,16 +65,6 @@ h1 {
   line-height: 1.05;
 }
 
-.standfirst {
-  max-width: 60ch;
-  margin: 0.9rem 0 0;
-  font-size: 1rem;
-  font-weight: 300;
-  color: #333;
-}
-
-.standfirst strong { font-weight: 500; color: var(--red); }
-
 /* ---------- Legend ------------------------------------------ */
 
 .legend {
@@ -83,7 +74,7 @@ h1 {
   margin: 1.4rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.8rem;
+  font-size: 0.875rem;
   letter-spacing: 0.04em;
   color: var(--caption);
   text-transform: uppercase;
@@ -179,8 +170,8 @@ h1 {
 
 .bar__name {
   margin: 0;
-  padding: 0 0.45rem;
-  font-size: 0.72rem;
+  padding: 0 0.5rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -200,7 +191,7 @@ h1 {
   align-items: center;
   width: max-content;
   color: var(--ink);
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 500;
   pointer-events: none;
 }
@@ -223,48 +214,18 @@ h1 {
   height: var(--bar-h);
   display: flex;
   align-items: center;
-  font-size: 0.62rem;
-  color: var(--caption);
+  font-size: 0.9rem;
+  color: var(--ink);
   pointer-events: none;
   white-space: nowrap;
 }
 .age--death {
   left: calc((var(--death) - var(--min-year)) / var(--span) * 100% + 4px);
 }
-.president.is-living .age--death { color: var(--navy); }
 .age--inaug {
   left: calc((var(--t-start) - var(--min-year)) / var(--span) * 100% - 1.4em);
   justify-content: flex-end;
-  color: var(--paper);
-  mix-blend-mode: difference;
-}
-
-/* ---------- Hover guide line + badges ----------------------- */
-
-.guide {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1px dashed var(--salmon);
-  pointer-events: none;
-  opacity: 0;
-  z-index: 4;
-}
-.guide.is-on { opacity: 1; }
-
-.badge {
-  position: absolute;
-  transform: translateX(-50%);
-  font-size: 0.6rem;
-  font-weight: 500;
-  color: var(--paper);
-  background: var(--salmon);
-  padding: 0 3px;
-  border-radius: 2px;
-  pointer-events: none;
-  white-space: nowrap;
-  z-index: 5;
+  color: var(--ink);
 }
 
 /* ---------- Axis -------------------------------------------- */
@@ -281,7 +242,7 @@ h1 {
   top: 0;
   left: calc((var(--year) - var(--min-year)) / var(--span) * 100%);
   transform: translateX(-50%);
-  font-size: 0.68rem;
+  font-size: 0.875rem;
   color: var(--caption);
   padding-top: 0.25rem;
 }
@@ -396,10 +357,6 @@ h1 {
 /* ---------- Focus & accessibility --------------------------- */
 
 .bar:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
-
-@media (prefers-reduced-motion: no-preference) {
-  .guide { transition: opacity 0.12s ease; }
-}
 
 /* ---------- Colophon ---------------------------------------- */
 

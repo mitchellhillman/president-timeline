@@ -178,10 +178,6 @@
       }
 
       bar.addEventListener("click", () => openPopover(p, people));
-      bar.addEventListener("mouseenter", () => showGuide(p, people));
-      bar.addEventListener("mouseleave", hideGuide);
-      bar.addEventListener("focus", () => showGuide(p, people));
-      bar.addEventListener("blur", hideGuide);
 
       li.appendChild(article);
       list.appendChild(li);
@@ -190,52 +186,6 @@
 
   function plotEl() {
     return document.getElementById("plot");
-  }
-
-  /* ---------- hover guide line + age badges ----------------- */
-
-  let badgeNodes = [];
-
-  function showGuide(target, people) {
-    const inaug = target._terms[0].start;
-    const guide = document.getElementById("guide");
-    const yr = decimalYear(inaug);
-    guide.style.setProperty("--year", yr);
-    guide.style.left =
-      "calc((" + yr.toFixed(4) +
-      " - var(--min-year)) / var(--span) * 100%)";
-    guide.classList.add("is-on");
-
-    hideBadges();
-    const rows = document.querySelectorAll(".president");
-    people.forEach((p, i) => {
-      const age = ageOn(p, inaug);
-      if (age == null) return;
-      const badge = document.createElement("span");
-      badge.className = "badge";
-      badge.textContent = age;
-      badge.style.left =
-        "calc((" + yr.toFixed(4) +
-        " - var(--min-year)) / var(--span) * 100%)";
-      badge.style.top = i * rowHeight() + (rowHeight() - 12) / 2 + "px";
-      document.getElementById("guide").parentElement.appendChild(badge);
-      badgeNodes.push(badge);
-    });
-  }
-
-  function rowHeight() {
-    const v = getComputedStyle(document.documentElement).getPropertyValue("--row-h");
-    return parseFloat(v) || 30;
-  }
-
-  function hideBadges() {
-    badgeNodes.forEach((b) => b.remove());
-    badgeNodes = [];
-  }
-
-  function hideGuide() {
-    document.getElementById("guide").classList.remove("is-on");
-    hideBadges();
   }
 
   /* ---------- popover --------------------------------------- */
